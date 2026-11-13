@@ -26,6 +26,10 @@ import {
   ArrowUp
 } from 'lucide-react';
 
+const API_BASE_URL = (
+  import.meta.env.VITE_API_BASE_URL || ''
+).replace(/\/$/, '');
+
 interface Message {
   id: string;
   role: 'user' | 'ai';
@@ -214,20 +218,23 @@ export default function EasyPeasyApp() {
   }, []);
 
   const searchConceptImages = async (query: string) => {
-    try {
-      const response = await fetch(`/api/search-image?q=${encodeURIComponent(query)}`);
-      const data = await response.json().catch(() => ({}));
+  try {
+    const response = await fetch(
+      `${API_BASE_URL}/api/search-image?q=${encodeURIComponent(query)}`
+    );
 
-      if (!response.ok) {
-        throw new Error(data.error || `Image search failed (${response.status}).`);
-      }
+    const data = await response.json().catch(() => ({}));
 
-      return Array.isArray(data.images) ? data.images : [];
-    } catch (error) {
-      console.error('Wikimedia image search error:', error);
-      return [];
+    if (!response.ok) {
+      throw new Error(data.error || `Image search failed (${response.status}).`);
     }
-  };
+
+    return Array.isArray(data.images) ? data.images : [];
+  } catch (error) {
+    console.error('Wikimedia image search error:', error);
+    return [];
+  }
+};
 
   const handleSend = async (textToSend?: string) => {
     const query = textToSend || input;
@@ -322,14 +329,13 @@ export default function EasyPeasyApp() {
         }
       }`;
 
-      const response = await fetch('/api/generate', {
+      const response = await fetch(`${API_BASE_URL}/api/generate`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({ prompt })
       });
-
       const data = await response.json();
 
       if (!response.ok) {
