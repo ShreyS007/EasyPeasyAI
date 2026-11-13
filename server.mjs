@@ -6,7 +6,7 @@
  * Required .env:
  *   GEMINI_API_KEY=your_key_here
  * Optional:
- *   GEMINI_MODEL=gemini-3.7-flash
+ *   GEMINI_MODEL=gemini-3.5-flash-lite
  *   PORT=3001
  */
 import express from "express";
@@ -16,7 +16,7 @@ dotenv.config();
 
 const app = express();
 const PORT = Number(process.env.PORT || 3001);
-const GEMINI_MODEL = process.env.GEMINI_MODEL || "gemini-3.7-flash";
+const GEMINI_MODEL = process.env.GEMINI_MODEL || "gemini-3.5-flash-lite";
 
 app.use(express.json({ limit: "2mb" }));
 
@@ -231,6 +231,6 @@ app.get("/api/search-image", async (req, res) => {
   }
 });
 
-app.listen(PORT, () => {
-  console.log(`EasyPeasyAI backend running at http://localhost:${PORT}`);
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`EasyPeasyAI backend running on port ${PORT}`);
 });
